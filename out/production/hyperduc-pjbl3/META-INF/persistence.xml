@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="3.0"
+             xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+
+    <persistence-unit name="hyperducPU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+
+        <!-- As 7 entidades mapeadas -->
+        <class>com.example.projetoversaofinal.model.Projeto</class>
+        <class>com.example.projetoversaofinal.model.Atividade</class>
+        <class>com.example.projetoversaofinal.model.Colaborador</class>
+        <class>com.example.projetoversaofinal.model.Denuncia</class>
+        <class>com.example.projetoversaofinal.model.Participacao</class>
+        <class>com.example.projetoversaofinal.model.Comentario</class>
+        <class>com.example.projetoversaofinal.model.Etiqueta</class>
+        <!-- Conversores dos estados (padrão State) -->
+        <class>com.example.projetoversaofinal.model.EstadoProjetoConverter</class>
+        <class>com.example.projetoversaofinal.model.EstadoAtividadeConverter</class>
+        <class>com.example.projetoversaofinal.model.EstadoDenunciaConverter</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <properties>
+            <!-- MAMP: no macOS o MySQL roda na porta 8889, usuário root e senha root.
+                 No Windows o MAMP costuma usar a porta 3306: troque na URL abaixo.
+                 O banco "hyperduc" é criado sozinho na primeira execução. -->
+            <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="jakarta.persistence.jdbc.url"
+                      value="jdbc:mysql://localhost:8889/hyperduc?createDatabaseIfNotExist=true&amp;useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=America/Sao_Paulo"/>
+            <property name="jakarta.persistence.jdbc.user" value="root"/>
+            <property name="jakarta.persistence.jdbc.password" value="root"/>
+
+            <!-- Dialeto SQL do MySQL (tipos de coluna, paginação etc.) -->
+            <property name="eclipselink.target-database" value="MySQL"/>
+
+            <!-- O EclipseLink cria as tabelas que faltarem e não apaga dados existentes -->
+            <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
+            <property name="eclipselink.ddl-generation.output-mode" value="database"/>
+
+            <!-- Weaving é a instrumentação de bytecode do EclipseLink; desligado
+                 para funcionar sem agente Java (e com o module-info do JavaFX). -->
+            <property name="eclipselink.weaving" value="false"/>
+
+            <!-- Sem cache compartilhado: cada consulta lê o estado atual do banco.
+                 Evita listas desatualizadas no lado inverso dos relacionamentos
+                 (ex.: Etiqueta.atividades quando a atividade é alterada). -->
+            <property name="eclipselink.cache.shared.default" value="false"/>
+
+            <!-- Mostra no console os SQL gerados (bom para a apresentação). Use WARNING para esconder. -->
+            <property name="eclipselink.logging.level" value="WARNING"/>
+            <property name="eclipselink.logging.level.sql" value="FINE"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>
